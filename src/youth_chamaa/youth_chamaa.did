@@ -1,0 +1,84 @@
+type AddMemberToGroupPayload = record { group_id : nat64; member_id : nat64 };
+type Admin = record {
+  id : nat64;
+  name : text;
+  created_at : nat64;
+  email : text;
+};
+type AdminPayload = record { name : text; email : text };
+type Contribution = record {
+  id : nat64;
+  created_at : nat64;
+  group_id : nat64;
+  member_id : nat64;
+  amount : float64;
+};
+type ContributionPayload = record {
+  group_id : nat64;
+  member_id : nat64;
+  amount : float64;
+};
+type Error = variant {
+  EmptyFields : record { msg : text };
+  NotFound : record { msg : text };
+  UnAuthorized : record { msg : text };
+  AlreadyExists : record { msg : text };
+  InvalidName : record { msg : text };
+  NotGroupMember : record { msg : text };
+  InvalidEmail : record { msg : text };
+};
+type Group = record {
+  id : nat64;
+  members : vec text;
+  admin_id : text;
+  name : text;
+  created_at : nat64;
+};
+type GroupPayload = record { admin_id : text; name : text };
+type Member = record {
+  id : nat64;
+  name : text;
+  created_at : nat64;
+  email : text;
+  points : nat64;
+};
+type MemberPayload = record { name : text; email : text };
+type Proposal = record {
+  id : nat64;
+  description : text;
+  created_at : nat64;
+  group_id : nat64;
+  votes_for : nat64;
+  proposer_id : nat64;
+  votes_against : nat64;
+};
+type ProposalPayload = record {
+  description : text;
+  group_id : nat64;
+  proposer_id : nat64;
+};
+type Result = variant { Ok : Contribution; Err : Error };
+type Result_1 = variant { Ok : Member; Err : Error };
+type Result_2 = variant { Ok : Admin; Err : Error };
+type Result_3 = variant { Ok : Group; Err : Error };
+type Result_4 = variant { Ok : Proposal; Err : Error };
+type Result_5 = variant { Ok : vec Contribution; Err : Error };
+type Result_6 = variant { Ok : vec Proposal; Err : Error };
+type VotePayload = record {
+  vote : bool;
+  proposal_id : nat64;
+  member_id : nat64;
+};
+service : {
+  add_contribution : (ContributionPayload) -> (Result);
+  add_member : (MemberPayload) -> (Result_1);
+  add_member_to_group : (AddMemberToGroupPayload) -> (Result_1);
+  create_admin : (AdminPayload) -> (Result_2);
+  create_group : (GroupPayload) -> (Result_3);
+  create_proposal : (ProposalPayload) -> (Result_4);
+  get_group_contributions : (nat64) -> (Result_5) query;
+  get_group_proposals : (nat64) -> (Result_6) query;
+  get_leaderboard : () -> (vec Member) query;
+  update_admin : (AdminPayload) -> (Result_2);
+  vote_proposal : (VotePayload) -> (Result_4);
+}

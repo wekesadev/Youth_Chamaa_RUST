@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "canisters": {
+    "youth_chamaa": {
+      "type": "rust",
+      "package": "youth_chamaa",
+      "candid": "src/youth_chamaa/youth_chamaa.did"
+    }
+  },
+  "output_env_file": ".env"
+}
