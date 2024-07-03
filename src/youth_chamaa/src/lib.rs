@@ -860,6 +860,40 @@ fn get_group_proposals(group_id: u64) -> Result<Vec<Proposal>, Error> {
     })
 }
 
+// Function to remove a group by its ID
+#[ic_cdk::update]
+fn remove_group(group_id: u64) -> Result<(), Error> {
+    GROUPS_STORAGE.with(|storage| {
+        let mut storage = storage.borrow_mut();
+        if storage.remove(&group_id).is_none() {
+            return Err(Error::NotFound {
+                msg: "Group not found".to_string(),
+            });
+        }
+        Ok(())
+    })
+}
+
+// Function to update points for a member
+#[ic_cdk::update]
+fn update_member_points(member_id: u64, points: u64) -> Result<Member, Error> {
+    MEMBERS_STORAGE.with(|storage| {
+        let mut storage = storage.borrow_mut();
+        let member = storage.get(&member_id).ok_or_else(|| Error::NotFound {
+            msg: "Member not found".to_string(),
+        })?;
+        let updated_member = Member {
+            id: member.id,
+            name: member.name,
+            email: member.email,
+            points,
+            created_at: member.created_at,
+        };
+        storage.insert(member.id, updated_member.clone());
+        Ok(updated_member)
+    })
+}
+
 // Function to get the current time in nanoseconds since the Unix epoch
 fn get_current_time() -> u64 {
     time() / 1_000_000 // Convert to milliseconds

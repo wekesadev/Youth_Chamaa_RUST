@@ -64,6 +64,7 @@ type Result_3 = variant { Ok : Group; Err : Error };
 type Result_4 = variant { Ok : Proposal; Err : Error };
 type Result_5 = variant { Ok : vec Contribution; Err : Error };
 type Result_6 = variant { Ok : vec Proposal; Err : Error };
+type Result_7 = variant { Ok; Err : Error };
 type VotePayload = record {
   vote : bool;
   proposal_id : nat64;
@@ -79,6 +80,8 @@ service : {
   get_group_contributions : (nat64) -> (Result_5) query;
   get_group_proposals : (nat64) -> (Result_6) query;
   get_leaderboard : () -> (vec Member) query;
+  remove_group : (nat64) -> (Result_7);
   update_admin : (AdminPayload) -> (Result_2);
+  update_member_points : (nat64, nat64) -> (Result_1);
   vote_proposal : (VotePayload) -> (Result_4);
 }
